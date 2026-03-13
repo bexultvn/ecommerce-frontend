@@ -13,7 +13,7 @@ function getNavbarHTML() {
     ? `
       <a href="#/orders" class="text-sm font-medium hover:text-gray-600">Orders</a>
       <a href="#/profile" class="text-sm font-medium hover:text-gray-600">Profile</a>
-      <span class="text-sm text-gray-500">Hi, ${user.name.split(' ')[0]}</span>
+      <span class="text-sm text-gray-500">Hi, ${user.firstName || user.email}</span>
       <button id="logout-btn" class="text-sm font-medium text-red-600 hover:text-red-800">Logout</button>
     `
     : `<a href="#/login" class="text-sm font-medium hover:text-gray-600">Login</a>`;

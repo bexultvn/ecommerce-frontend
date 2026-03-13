@@ -13,7 +13,7 @@ export function login(email, password) {
 }
 
 export function register(data) {
-  const { name, email, password } = data;
+  const { firstName, lastName, email, password } = data;
   const users = lsGetAll('users');
 
   const existing = users.find(u => u.email === email);
@@ -25,9 +25,9 @@ export function register(data) {
     id: 'u' + Date.now(),
     email,
     password,
-    name,
-    phone: '',
-    address: ''
+    firstName,
+    lastName,
+    address: { street: '', houseNumber: '', zipCode: '' }
   };
 
   users.push(newUser);

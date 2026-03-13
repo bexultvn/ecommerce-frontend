@@ -52,14 +52,25 @@ export const template = `
 
       <!-- Register Form -->
       <form id="register-form" class="space-y-4 hidden">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          <input
-            type="text"
-            id="reg-name"
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            placeholder="John Doe"
-          />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <input
+              type="text"
+              id="reg-firstname"
+              class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="John"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <input
+              type="text"
+              id="reg-lastname"
+              class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Doe"
+            />
+          </div>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -145,12 +156,14 @@ export function init() {
 
   registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('reg-name').value.trim();
+    const firstName = document.getElementById('reg-firstname').value.trim();
+    const lastName = document.getElementById('reg-lastname').value.trim();
     const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
     const confirm = document.getElementById('reg-confirm').value;
 
-    if (!name) { showToast('Please enter your name', 'error'); return; }
+    if (!firstName) { showToast('Please enter your first name', 'error'); return; }
+    if (!lastName) { showToast('Please enter your last name', 'error'); return; }
     if (!email) { showToast('Please enter your email', 'error'); return; }
     if (!email.includes('@')) { showToast('Please enter a valid email', 'error'); return; }
     if (!password) { showToast('Please enter a password', 'error'); return; }
@@ -158,7 +171,7 @@ export function init() {
     if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
 
     try {
-      register({ name, email, password });
+      register({ firstName, lastName, email, password });
       showToast('Account created! Welcome!', 'success');
       navigate('/');
     } catch (err) {

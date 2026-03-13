@@ -126,17 +126,17 @@ export const mockUsers = [
     id: 'u1',
     email: 'john@example.com',
     password: 'password123',
-    name: 'John Doe',
-    phone: '555-123-4567',
-    address: '123 Main St, Springfield, IL 62701'
+    firstName: 'John',
+    lastName: 'Doe',
+    address: { street: 'Main St', houseNumber: '123', zipCode: '62701' }
   },
   {
     id: 'u2',
     email: 'jane@example.com',
     password: 'password456',
-    name: 'Jane Smith',
-    phone: '555-987-6543',
-    address: '456 Oak Ave, Portland, OR 97201'
+    firstName: 'Jane',
+    lastName: 'Smith',
+    address: { street: 'Oak Ave', houseNumber: '456', zipCode: '97201' }
   }
 ];
 

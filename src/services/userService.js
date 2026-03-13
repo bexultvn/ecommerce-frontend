@@ -1,25 +1,25 @@
-import { lsGetAll, lsSet } from '../storage/localStorage.js';
+import { updateCustomer, findCustomerById } from './customerService.js';
 import { getUser, setUser } from '../core/auth.js';
+import { lsGetAll, lsSet } from '../storage/localStorage.js';
 
-export function getUser_ById(id) {
-  const users = lsGetAll('users');
-  return users.find(u => u.id === String(id)) || null;
+export async function getUserById(id) {
+  return findCustomerById(id);
 }
 
-export function updateUser(id, data) {
+export async function updateUser(id, data) {
+  const user = getUser();
+  const updatedRequest = { id: String(id), ...data };
+  await updateCustomer(updatedRequest);
+
+  // Refresh auth session with updated data (exclude password)
   const users = lsGetAll('users');
-  const index = users.findIndex(u => u.id === String(id));
-  if (index === -1) throw new Error('User not found');
-
-  const updatedUser = { ...users[index], ...data };
-  users[index] = updatedUser;
-  lsSet('users', users);
-
-  // Update auth session (exclude password)
-  const { password: _pw, ...safeUser } = updatedUser;
-  setUser(safeUser);
-
-  return safeUser;
+  const stored = users.find(u => u.id === String(id));
+  if (stored) {
+    const { password: _pw, ...safeUser } = stored;
+    setUser(safeUser);
+  } else if (user) {
+    setUser({ ...user, ...data });
+  }
 }
 
 export function changePassword(id, oldPass, newPass) {
