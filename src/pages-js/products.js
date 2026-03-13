@@ -2,7 +2,6 @@ import { getAll } from '../services/productService.js';
 import { addToCart } from '../services/cartService.js';
 import { productCard } from '../components/productCard.js';
 import { showToast } from '../components/toast.js';
-import { lsGetAll } from '../storage/localStorage.js';
 
 export const template = `
   <div class="max-w-6xl mx-auto px-4 py-8">
@@ -79,7 +78,6 @@ export const template = `
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
             <option value="name-asc">Name: A-Z</option>
-            <option value="rating-desc">Top Rated</option>
           </select>
         </div>
 
@@ -92,53 +90,58 @@ export const template = `
   </div>
 `;
 
-export function init(params = {}) {
+export async function init(params = {}) {
   let activeCategories = params.category ? [params.category] : [];
   let searchQuery = '';
   let sortValue = '';
   let minPrice = undefined;
   let maxPrice = undefined;
+  let allProducts = [];
 
   // Pre-check category from URL
   if (activeCategories.length > 0) {
     document.querySelectorAll('.category-filter').forEach(cb => {
-      if (activeCategories.includes(cb.value)) {
-        cb.checked = true;
-      }
+      if (activeCategories.includes(cb.value)) cb.checked = true;
     });
   }
 
-  function renderProducts() {
-    const grid = document.getElementById('products-grid');
-    const info = document.getElementById('results-info');
+  const grid = document.getElementById('products-grid');
+  const info = document.getElementById('results-info');
 
-    const filters = {};
-    if (activeCategories.length === 1) filters.category = activeCategories[0];
-    if (searchQuery) filters.search = searchQuery;
-    if (sortValue) filters.sort = sortValue;
-    if (minPrice !== undefined) filters.minPrice = minPrice;
-    if (maxPrice !== undefined) filters.maxPrice = maxPrice;
+  try {
+    allProducts = await getAll();
+  } catch (e) {
+    grid.innerHTML = '<div class="col-span-3 text-center text-gray-400 py-12">Failed to load products.</div>';
+    return;
+  }
 
-    let products = getAll(filters);
+  function applyFilters(products) {
+    let result = products;
 
-    // Multi-category filter (when more than one selected)
-    if (activeCategories.length > 1) {
-      products = lsGetAll('products').filter(p => activeCategories.includes(p.category));
-      // Re-apply other filters manually
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        products = products.filter(p =>
-          p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
-        );
-      }
-      if (minPrice !== undefined) products = products.filter(p => p.price >= minPrice);
-      if (maxPrice !== undefined) products = products.filter(p => p.price <= maxPrice);
-      if (sortValue === 'price-asc') products.sort((a, b) => a.price - b.price);
-      else if (sortValue === 'price-desc') products.sort((a, b) => b.price - a.price);
-      else if (sortValue === 'name-asc') products.sort((a, b) => a.name.localeCompare(b.name));
-      else if (sortValue === 'rating-desc') products.sort((a, b) => b.rating - a.rating);
+    if (activeCategories.length > 0) {
+      result = result.filter(p => activeCategories.includes(p.categoryName));
     }
 
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      );
+    }
+
+    if (minPrice !== undefined) result = result.filter(p => p.price >= minPrice);
+    if (maxPrice !== undefined) result = result.filter(p => p.price <= maxPrice);
+
+    if (sortValue === 'price-asc') result = [...result].sort((a, b) => a.price - b.price);
+    else if (sortValue === 'price-desc') result = [...result].sort((a, b) => b.price - a.price);
+    else if (sortValue === 'name-asc') result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+
+    return result;
+  }
+
+  function renderProducts() {
+    const products = applyFilters(allProducts);
     info.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} found`;
 
     if (products.length === 0) {
@@ -199,12 +202,11 @@ export function init(params = {}) {
   });
 
   // Add to cart via event delegation
-  document.getElementById('products-grid').addEventListener('click', (e) => {
+  grid.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action="add-to-cart"]');
     if (!btn) return;
     const productId = btn.getAttribute('data-product-id');
-    const products = lsGetAll('products');
-    const product = products.find(p => p.id === productId);
+    const product = allProducts.find(p => String(p.id) === String(productId));
     if (product) {
       addToCart(product, 1);
       showToast(`${product.name} added to cart!`, 'success');

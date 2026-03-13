@@ -1,11 +1,10 @@
 export function cartItemHTML(item) {
   return `
     <div class="flex gap-4 py-4 border-b border-gray-200" data-product-id="${item.productId}">
-      <img
-        src="${item.image}"
-        alt="${item.name}"
-        class="w-20 h-20 object-cover rounded bg-gray-100 flex-shrink-0"
-      />
+      ${item.image
+        ? `<img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded bg-gray-100 flex-shrink-0" />`
+        : `<div class="w-20 h-20 rounded bg-gray-100 flex-shrink-0 flex items-center justify-center text-gray-400 text-xs">No image</div>`
+      }
       <div class="flex-1 min-w-0">
         <h3 class="font-medium text-gray-900 truncate">${item.name}</h3>
         <p class="text-sm text-gray-500 mt-0.5">$${item.price.toFixed(2)} each</p>

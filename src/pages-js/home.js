@@ -3,7 +3,6 @@ import { addToCart } from '../services/cartService.js';
 import { productCard } from '../components/productCard.js';
 import { showToast } from '../components/toast.js';
 import { navigate } from '../core/router.js';
-import { lsGetAll } from '../storage/localStorage.js';
 
 export const template = `
   <div>
@@ -65,10 +64,17 @@ export const template = `
   </div>
 `;
 
-export function init() {
+export async function init() {
   const grid = document.getElementById('featured-grid');
 
-  const featured = getFeatured();
+  let featured = [];
+  try {
+    featured = await getFeatured();
+  } catch (e) {
+    grid.innerHTML = '<div class="col-span-4 text-center text-gray-400 py-8">Failed to load products.</div>';
+    return;
+  }
+
   if (featured.length === 0) {
     grid.innerHTML = '<div class="col-span-4 text-center text-gray-400 py-8">No products found.</div>';
   } else {
@@ -88,8 +94,7 @@ export function init() {
     const btn = e.target.closest('[data-action="add-to-cart"]');
     if (!btn) return;
     const productId = btn.getAttribute('data-product-id');
-    const products = lsGetAll('products');
-    const product = products.find(p => p.id === productId);
+    const product = featured.find(p => String(p.id) === String(productId));
     if (product) {
       addToCart(product, 1);
       showToast(`${product.name} added to cart!`, 'success');

@@ -1,10 +1,29 @@
+import { apiGet } from './api.js';
 import { lsGetAll } from '../storage/localStorage.js';
+import { config } from '../config/config.js';
 
-export function getAll(filters = {}) {
-  let products = lsGetAll('products');
+function normalize(p) {
+  return {
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    availableQuantity: p.availableQuantity,
+    categoryName: p.categoryName,
+    categoryId: p.categoryId,
+    image: p.image || null
+  };
+}
+
+export async function getAll(filters = {}) {
+  const raw = config.USE_MOCK
+    ? lsGetAll('products')
+    : await apiGet('/products');
+
+  let products = raw.map(normalize);
 
   if (filters.category) {
-    products = products.filter(p => p.category === filters.category);
+    products = products.filter(p => p.categoryName === filters.category);
   }
 
   if (filters.search) {
@@ -12,7 +31,7 @@ export function getAll(filters = {}) {
     products = products.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q)
+      (p.categoryName && p.categoryName.toLowerCase().includes(q))
     );
   }
 
@@ -35,9 +54,6 @@ export function getAll(filters = {}) {
       case 'name-asc':
         products.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'rating-desc':
-        products.sort((a, b) => b.rating - a.rating);
-        break;
       default:
         break;
     }
@@ -46,12 +62,18 @@ export function getAll(filters = {}) {
   return products;
 }
 
-export function getById(id) {
-  const products = lsGetAll('products');
-  return products.find(p => p.id === String(id)) || null;
+export async function getById(id) {
+  if (config.USE_MOCK) {
+    const raw = lsGetAll('products').find(p => p.id === String(id));
+    return raw ? normalize(raw) : null;
+  }
+  try {
+    return normalize(await apiGet(`/products/${id}`));
+  } catch {
+    return null;
+  }
 }
 
-export function getFeatured() {
-  const products = lsGetAll('products');
-  return products.slice(0, 4);
+export async function getFeatured() {
+  return (await getAll()).slice(0, 4);
 }

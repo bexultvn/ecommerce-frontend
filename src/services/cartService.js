@@ -19,7 +19,7 @@ export function addToCart(product, qty = 1) {
       name: product.name,
       price: product.price,
       qty,
-      image: product.image
+      image: product.image || null
     });
   }
 
