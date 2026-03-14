@@ -1,18 +1,20 @@
 import { getCart, removeFromCart, updateQty, getTotal, clearCart } from '../services/cartService.js';
-import { createOrder } from '../services/orderService.js';
 import { getCurrentUser } from '../services/authService.js';
 import { cartItemHTML } from '../components/cartItem.js';
 import { showToast } from '../components/toast.js';
 import { navigate } from '../core/router.js';
 
 export const template = `
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-6">Shopping Cart</h1>
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-8">
+      <a href="#/" class="hover:text-black">Home</a>
+      <span>/</span>
+      <span class="text-black font-medium">Cart</span>
+    </div>
     <div id="cart-content"></div>
   </div>
 `;
-
-const PAYMENT_METHODS = ['CREDIT_CARD', 'VISA', 'MASTER_CARD', 'PAYPAL', 'BITCOIN'];
 
 function renderCart() {
   const content = document.getElementById('cart-content');
@@ -22,140 +24,94 @@ function renderCart() {
 
   if (cart.length === 0) {
     content.innerHTML = `
-      <div class="text-center py-16">
-        <p class="text-gray-400 text-lg mb-4">Your cart is empty.</p>
-        <a href="#/products" class="inline-block bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-          Browse Products
-        </a>
+      <div class="text-center py-20">
+        <p class="text-gray-400 text-lg mb-6">Your cart is empty.</p>
+        <a href="#/products" class="inline-block bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded text-sm font-medium transition-colors">Browse Products</a>
       </div>
     `;
     return;
   }
 
-  const total = getTotal();
-  const shipping = total > 50 ? 0 : 5.99;
-  const grandTotal = total + shipping;
-
-  const paymentOptions = PAYMENT_METHODS.map(m =>
-    `<option value="${m}">${m.replace('_', ' ')}</option>`
-  ).join('');
+  const subtotal = getTotal();
+  const shipping = subtotal > 50 ? 0 : 5.99;
+  const total = subtotal + shipping;
 
   content.innerHTML = `
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Cart Items -->
-      <div class="flex-1">
-        <div id="cart-items-list">
+    <!-- Cart Table -->
+    <div class="shadow-sm rounded border border-gray-200 overflow-x-auto mb-6">
+      <table class="w-full min-w-[600px]">
+        <thead>
+          <tr class="bg-white text-sm font-medium text-gray-700">
+            <th class="text-left px-6 py-4 font-medium">Product</th>
+            <th class="text-left px-4 py-4 font-medium">Price</th>
+            <th class="text-left px-4 py-4 font-medium">Quantity</th>
+            <th class="text-left px-4 py-4 font-medium">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="cart-items-list" class="px-6">
           ${cart.map(item => cartItemHTML(item)).join('')}
-        </div>
-        <button
-          id="clear-cart-btn"
-          class="mt-4 text-sm text-gray-500 hover:text-red-600 underline"
-        >
-          Clear cart
-        </button>
-      </div>
+        </tbody>
+      </table>
+    </div>
 
-      <!-- Order Summary -->
-      <div class="lg:w-72 flex-shrink-0">
-        <div class="border border-gray-200 rounded-lg p-5 sticky top-20">
-          <h2 class="font-semibold text-lg mb-4">Order Summary</h2>
-          <div class="space-y-2 text-sm mb-4">
-            <div class="flex justify-between">
-              <span class="text-gray-600">Subtotal</span>
-              <span>$${total.toFixed(2)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">Shipping</span>
-              <span>${shipping === 0 ? '<span class="text-green-600">Free</span>' : '$' + shipping.toFixed(2)}</span>
-            </div>
-            ${shipping > 0 ? '<p class="text-xs text-gray-400">Free shipping on orders over $50</p>' : ''}
+    <!-- Action Buttons -->
+    <div class="flex justify-between mb-8">
+      <a href="#/products" class="border border-gray-300 px-8 py-3 rounded text-sm font-medium hover:bg-gray-50 transition-colors">Return To Shop</a>
+    </div>
+
+    <!-- Cart Total -->
+    <div class="flex justify-end">
+      <div
+      <div class="border border-gray-300 rounded p-6 w-full lg:w-72 flex-shrink-0">
+        <h3 class="font-semibold text-base mb-4">Cart Total</h3>
+        <div class="space-y-3 text-sm border-b border-gray-200 pb-4 mb-4">
+          <div class="flex justify-between">
+            <span>Subtotal:</span>
+            <span>$${subtotal.toFixed(2)}</span>
           </div>
-          <div class="border-t border-gray-200 pt-3 flex justify-between font-bold text-base mb-4">
-            <span>Total</span>
-            <span>$${grandTotal.toFixed(2)}</span>
+          <div class="flex justify-between border-t border-gray-200 pt-3">
+            <span>Shipping:</span>
+            <span>${shipping === 0 ? 'Free' : '$' + shipping.toFixed(2)}</span>
           </div>
-          <div class="mb-4">
-            <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-            <select
-              id="payment-method"
-              class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
-            >
-              ${paymentOptions}
-            </select>
+          <div class="flex justify-between border-t border-gray-200 pt-3 font-semibold">
+            <span>Total:</span>
+            <span>$${total.toFixed(2)}</span>
           </div>
-          <button
-            id="checkout-btn"
-            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-800 disabled:opacity-50"
-          >
-            Checkout
-          </button>
         </div>
+        <button id="checkout-btn" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded text-sm font-medium transition-colors">
+          Proceed to Checkout
+        </button>
       </div>
     </div>
   `;
 
-  // Bind events
-  document.getElementById('clear-cart-btn').addEventListener('click', () => {
-    clearCart();
-    showToast('Cart cleared', 'info');
-    renderCart();
-  });
-
-  document.getElementById('checkout-btn').addEventListener('click', async () => {
+  document.getElementById('checkout-btn').addEventListener('click', () => {
     const user = getCurrentUser();
     if (!user) {
       showToast('Please log in to checkout', 'error');
       navigate('/login');
       return;
     }
-
-    const btn = document.getElementById('checkout-btn');
-    const paymentMethod = document.getElementById('payment-method').value;
-    btn.disabled = true;
-    btn.textContent = 'Placing order...';
-
-    try {
-      const currentCart = getCart();
-      const orderTotal = getTotal();
-      await createOrder(user.id, currentCart, orderTotal, paymentMethod);
-      showToast('Order placed successfully!', 'success');
-      navigate('/orders');
-    } catch (err) {
-      showToast('Failed to place order. Please try again.', 'error');
-      btn.disabled = false;
-      btn.textContent = 'Checkout';
-    }
+    navigate('/checkout');
   });
 
-  // Event delegation for cart item controls
   document.getElementById('cart-items-list').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
-
     const productId = btn.getAttribute('data-product-id');
     const action = btn.getAttribute('data-action');
-
     if (action === 'remove-item') {
       removeFromCart(productId);
       showToast('Item removed', 'info');
       renderCart();
     } else if (action === 'increase-qty') {
-      const currentCart = getCart();
-      const item = currentCart.find(i => i.productId === productId);
-      if (item) {
-        updateQty(productId, item.qty + 1);
-        renderCart();
-      }
+      const item = getCart().find(i => i.productId === productId);
+      if (item) { updateQty(productId, item.qty + 1); renderCart(); }
     } else if (action === 'decrease-qty') {
-      const currentCart = getCart();
-      const item = currentCart.find(i => i.productId === productId);
+      const item = getCart().find(i => i.productId === productId);
       if (item) {
-        if (item.qty <= 1) {
-          removeFromCart(productId);
-          showToast('Item removed', 'info');
-        } else {
-          updateQty(productId, item.qty - 1);
-        }
+        if (item.qty <= 1) { removeFromCart(productId); showToast('Item removed', 'info'); }
+        else updateQty(productId, item.qty - 1);
         renderCart();
       }
     }

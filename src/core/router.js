@@ -1,6 +1,6 @@
 import { isLoggedIn } from './auth.js';
 
-const PROTECTED_ROUTES = ['/cart', '/orders', '/profile'];
+const PROTECTED_ROUTES = ['/cart', '/orders', '/profile', '/checkout'];
 
 const routes = {
   '': () => import('../pages-js/home.js'),
@@ -11,6 +11,7 @@ const routes = {
   '/cart': () => import('../pages-js/cart.js'),
   '/orders': () => import('../pages-js/orders.js'),
   '/profile': () => import('../pages-js/profile.js'),
+  '/checkout': () => import('../pages-js/checkout.js'),
 };
 
 function parseHash() {
@@ -28,46 +29,32 @@ function parseHash() {
 }
 
 function matchRoute(path) {
-  // Exact match first
-  if (routes[path]) {
-    return { loader: routes[path], routeParams: {} };
-  }
-
-  // Dynamic route: /product/:id
+  if (routes[path]) return { loader: routes[path], routeParams: {} };
   const segments = path.split('/').filter(Boolean);
   if (segments.length === 2 && segments[0] === 'product') {
     return { loader: routes['/product'], routeParams: { id: segments[1] } };
   }
-
-  // Default to home
   return { loader: routes['/'], routeParams: {} };
 }
 
 async function handleRoute() {
   const app = document.getElementById('app');
   const { path, params } = parseHash();
-
-  // Check protected routes
   const basePath = '/' + (path.split('/').filter(Boolean)[0] || '');
   if (PROTECTED_ROUTES.includes(basePath) && !isLoggedIn()) {
     window.location.hash = '/login';
     return;
   }
-
   const { loader, routeParams } = matchRoute(path);
-
   try {
     const module = await loader();
     const { template, init } = module;
     app.innerHTML = template;
-    if (typeof init === 'function') {
-      await init({ ...routeParams, ...params });
-    }
+    if (typeof init === 'function') await init({ ...routeParams, ...params });
   } catch (err) {
     console.error('Router error:', err);
     app.innerHTML = `<div class="p-8 text-center text-red-600">Page failed to load. <a href="#/" class="underline">Go home</a></div>`;
   }
-
   window.scrollTo(0, 0);
 }
 

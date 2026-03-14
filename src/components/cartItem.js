@@ -1,36 +1,26 @@
 export function cartItemHTML(item) {
+  const imageHTML = item.image
+    ? `<img src="${item.image}" alt="${item.name}" class="w-14 h-14 object-contain bg-gray-100 rounded" />`
+    : `<div class="w-14 h-14 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">No img</div>`;
+
   return `
-    <div class="flex gap-4 py-4 border-b border-gray-200" data-product-id="${item.productId}">
-      ${item.image
-        ? `<img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded bg-gray-100 flex-shrink-0" />`
-        : `<div class="w-20 h-20 rounded bg-gray-100 flex-shrink-0 flex items-center justify-center text-gray-400 text-xs">No image</div>`
-      }
-      <div class="flex-1 min-w-0">
-        <h3 class="font-medium text-gray-900 truncate">${item.name}</h3>
-        <p class="text-sm text-gray-500 mt-0.5">$${item.price.toFixed(2)} each</p>
-        <div class="flex items-center gap-2 mt-2">
-          <button
-            class="w-7 h-7 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 font-bold"
-            data-action="decrease-qty"
-            data-product-id="${item.productId}"
-          >−</button>
-          <span class="w-8 text-center font-medium">${item.qty}</span>
-          <button
-            class="w-7 h-7 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 font-bold"
-            data-action="increase-qty"
-            data-product-id="${item.productId}"
-          >+</button>
+    <tr class="border-b border-gray-200" data-product-id="${item.productId}">
+      <td class="py-5 pr-4">
+        <div class="flex items-center gap-4">
+          <button class="text-gray-400 hover:text-red-500 text-lg font-bold leading-none" data-action="remove-item" data-product-id="${item.productId}" title="Remove">&#10005;</button>
+          ${imageHTML}
+          <span class="text-sm font-medium text-gray-800">${item.name}</span>
         </div>
-      </div>
-      <div class="flex flex-col items-end justify-between flex-shrink-0">
-        <button
-          class="text-gray-400 hover:text-red-500 text-lg leading-none"
-          data-action="remove-item"
-          data-product-id="${item.productId}"
-          title="Remove"
-        >&#10005;</button>
-        <span class="font-bold text-gray-900">$${(item.price * item.qty).toFixed(2)}</span>
-      </div>
-    </div>
+      </td>
+      <td class="py-5 pr-4 text-sm text-gray-700">$${item.price.toFixed(2)}</td>
+      <td class="py-5 pr-4">
+        <div class="flex items-center border border-gray-300 rounded w-24">
+          <button class="w-8 h-10 flex items-center justify-center hover:bg-gray-100 text-gray-600" data-action="decrease-qty" data-product-id="${item.productId}">−</button>
+          <span class="flex-1 text-center text-sm font-medium">${String(item.qty).padStart(2, '0')}</span>
+          <button class="w-8 h-10 flex items-center justify-center hover:bg-gray-100 text-gray-600" data-action="increase-qty" data-product-id="${item.productId}">+</button>
+        </div>
+      </td>
+      <td class="py-5 text-sm font-medium text-gray-800">$${(item.price * item.qty).toFixed(2)}</td>
+    </tr>
   `;
 }
