@@ -5,10 +5,20 @@ import { config } from '../config/config.js';
 function normalize(c) {
   return {
     id: c.id,
-    firstName: c.firstName,
-    lastName: c.lastName,
+    firstName: c.firstName || c.firstname,
+    lastName: c.lastName || c.lastname,
     email: c.email,
     address: c.address || { street: '', houseNumber: '', zipCode: '' }
+  };
+}
+
+function denormalize(c) {
+  return {
+    id: c.id,
+    firstname: c.firstName,
+    lastname: c.lastName,
+    email: c.email,
+    address: c.address
   };
 }
 
@@ -20,7 +30,7 @@ export async function createCustomer(request) {
     lsSet('users', users);
     return newUser.id;
   }
-  return apiPost('/customer', request);
+  return apiPost('/customer', denormalize(request));
 }
 
 export async function updateCustomer(request) {
@@ -32,7 +42,7 @@ export async function updateCustomer(request) {
     lsSet('users', users);
     return;
   }
-  return apiPut('/customer', request);
+  return apiPut('/customer', denormalize(request));
 }
 
 export async function findAllCustomers() {

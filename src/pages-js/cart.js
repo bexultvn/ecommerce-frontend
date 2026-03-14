@@ -12,6 +12,8 @@ export const template = `
   </div>
 `;
 
+const PAYMENT_METHODS = ['CREDIT_CARD', 'VISA', 'MASTER_CARD', 'PAYPAL', 'BITCOIN'];
+
 function renderCart() {
   const content = document.getElementById('cart-content');
   if (!content) return;
@@ -33,6 +35,10 @@ function renderCart() {
   const total = getTotal();
   const shipping = total > 50 ? 0 : 5.99;
   const grandTotal = total + shipping;
+
+  const paymentOptions = PAYMENT_METHODS.map(m =>
+    `<option value="${m}">${m.replace('_', ' ')}</option>`
+  ).join('');
 
   content.innerHTML = `
     <div class="flex flex-col lg:flex-row gap-8">
@@ -64,13 +70,22 @@ function renderCart() {
             </div>
             ${shipping > 0 ? '<p class="text-xs text-gray-400">Free shipping on orders over $50</p>' : ''}
           </div>
-          <div class="border-t border-gray-200 pt-3 flex justify-between font-bold text-base mb-5">
+          <div class="border-t border-gray-200 pt-3 flex justify-between font-bold text-base mb-4">
             <span>Total</span>
             <span>$${grandTotal.toFixed(2)}</span>
           </div>
+          <div class="mb-4">
+            <label for="payment-method" class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+            <select
+              id="payment-method"
+              class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+            >
+              ${paymentOptions}
+            </select>
+          </div>
           <button
             id="checkout-btn"
-            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-800"
+            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-800 disabled:opacity-50"
           >
             Checkout
           </button>
@@ -86,18 +101,30 @@ function renderCart() {
     renderCart();
   });
 
-  document.getElementById('checkout-btn').addEventListener('click', () => {
+  document.getElementById('checkout-btn').addEventListener('click', async () => {
     const user = getCurrentUser();
     if (!user) {
       showToast('Please log in to checkout', 'error');
       navigate('/login');
       return;
     }
-    const currentCart = getCart();
-    const orderTotal = getTotal();
-    createOrder(user.id, currentCart, orderTotal);
-    showToast('Order placed successfully!', 'success');
-    navigate('/orders');
+
+    const btn = document.getElementById('checkout-btn');
+    const paymentMethod = document.getElementById('payment-method').value;
+    btn.disabled = true;
+    btn.textContent = 'Placing order...';
+
+    try {
+      const currentCart = getCart();
+      const orderTotal = getTotal();
+      await createOrder(user.id, currentCart, orderTotal, paymentMethod);
+      showToast('Order placed successfully!', 'success');
+      navigate('/orders');
+    } catch (err) {
+      showToast('Failed to place order. Please try again.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Checkout';
+    }
   });
 
   // Event delegation for cart item controls
