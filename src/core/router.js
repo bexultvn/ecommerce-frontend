@@ -1,4 +1,5 @@
 import { isLoggedIn } from './auth.js';
+import { renderNavbar } from '../components/navbar.js';
 
 const PROTECTED_ROUTES = ['/cart', '/orders', '/profile', '/checkout'];
 
@@ -55,6 +56,7 @@ async function handleRoute() {
     console.error('Router error:', err);
     app.innerHTML = `<div class="p-8 text-center text-red-600">Page failed to load. <a href="#/" class="underline">Go home</a></div>`;
   }
+  renderNavbar();
   window.scrollTo(0, 0);
 }
 

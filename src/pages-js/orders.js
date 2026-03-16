@@ -4,7 +4,11 @@ import { orderCard } from '../components/orderCard.js';
 import { config } from '../config/config.js';
 
 export const template = `
-  <div class="max-w-3xl mx-auto px-4 py-8">
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <button onclick="history.back()" class="flex items-center gap-2 text-sm text-gray-500 hover:text-black mb-8 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Back
+    </button>
     <h1 class="text-2xl font-bold mb-6">My Orders</h1>
     <div id="orders-list"></div>
   </div>
@@ -32,11 +36,9 @@ export async function init() {
 
     if (filtered.length === 0) {
       list.innerHTML = `
-        <div class="text-center py-16">
-          <p class="text-gray-400 text-lg mb-4">You have no orders yet.</p>
-          <a href="#/products" class="inline-block bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-            Start Shopping
-          </a>
+        <div class="text-center py-20">
+          <p class="text-gray-400 text-lg mb-6">You have no orders yet.</p>
+          <a href="#/products" class="inline-block bg-red-500 hover:bg-red-600 text-white px-10 py-3 rounded text-sm font-medium transition-colors">Browse Products</a>
         </div>
       `;
       return;

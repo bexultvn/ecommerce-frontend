@@ -6,12 +6,10 @@ import { navigate } from '../core/router.js';
 
 export const template = `
   <div class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 text-sm text-gray-500 mb-8">
-      <a href="#/" class="hover:text-black">Home</a>
-      <span>/</span>
-      <span class="text-black font-medium">Cart</span>
-    </div>
+    <button onclick="history.back()" class="flex items-center gap-2 text-sm text-gray-500 hover:text-black mb-8 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Back
+    </button>
     <div id="cart-content"></div>
   </div>
 `;

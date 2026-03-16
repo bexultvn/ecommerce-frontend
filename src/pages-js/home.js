@@ -6,24 +6,71 @@ import { navigate } from '../core/router.js';
 
 export const template = `
   <div>
-    <!-- Flash Sales -->
-    <section class="max-w-7xl mx-auto px-6 py-10">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="w-5 h-10 bg-red-500 rounded-sm inline-block"></span>
-        <span class="text-red-500 font-semibold text-sm">Today's</span>
-      </div>
-      <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <h2 class="text-3xl font-semibold">Flash Sales</h2>
-      </div>
-      <div id="flash-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-        <div class="col-span-5 text-center text-gray-400 py-8">Loading...</div>
-      </div>
-      <div class="text-center mt-10">
-        <a href="#/products" class="inline-block border border-gray-300 px-14 py-3 rounded text-sm font-medium hover:bg-gray-50 transition-colors">View All Products</a>
+    <!-- Hero Section -->
+    <section class="bg-black text-white overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10 min-h-[420px]">
+        <!-- Text Content -->
+        <div class="flex-1 space-y-6 z-10">
+          <p class="text-gray-400 text-sm tracking-widest uppercase font-medium">New Arrivals 2026</p>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            Discover the <br />
+            <span class="text-red-500">Best Deals</span> <br />
+            Just for You
+          </h1>
+          <p class="text-gray-400 text-base max-w-sm leading-relaxed">
+            Shop the latest electronics, fashion, and more — all at unbeatable prices with fast delivery.
+          </p>
+          <a href="#/products" class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-10 py-4 rounded font-semibold transition-colors text-base">
+            Shop Now
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+        <!-- Visual: Shop Table -->
+        <div class="flex-1 flex justify-center items-center relative">
+          <div class="w-72 h-72 md:w-96 md:h-96 rounded-full bg-red-500 opacity-10 absolute blur-3xl"></div>
+          <div class="relative z-10 bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl w-full max-w-sm">
+            <p class="text-gray-400 text-xs uppercase tracking-widest mb-4 text-center">Our Collection</p>
+            <div class="grid grid-cols-3 gap-3">
+              <!-- Phone -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span class="text-gray-300 text-xs">Phones</span>
+              </div>
+              <!-- Laptop -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span class="text-gray-300 text-xs">Laptops</span>
+              </div>
+              <!-- Headphones -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                <span class="text-gray-300 text-xs">Audio</span>
+              </div>
+              <!-- Watch -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-gray-300 text-xs">Watches</span>
+              </div>
+              <!-- Camera -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span class="text-gray-300 text-xs">Cameras</span>
+              </div>
+              <!-- Gaming -->
+              <div class="bg-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+                <span class="text-gray-300 text-xs">Gaming</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+              <span class="text-gray-400 text-xs">500+ Products</span>
+              <span class="text-red-400 text-xs font-semibold">Up to 40% off</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <hr class="max-w-7xl mx-auto px-6 border-gray-200" />
 
     <!-- Browse By Category -->
     <section class="max-w-7xl mx-auto px-6 py-10">
@@ -62,41 +109,8 @@ export const template = `
       </div>
     </section>
 
-    <hr class="max-w-7xl mx-auto px-6 border-gray-200" />
 
-    <!-- Best Selling Products -->
-    <section class="max-w-7xl mx-auto px-6 py-10">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="w-5 h-10 bg-red-500 rounded-sm inline-block"></span>
-        <span class="text-red-500 font-semibold text-sm">This Month</span>
-      </div>
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-3xl font-semibold">Best Selling Products</h2>
-        <a href="#/products" class="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded text-sm font-medium transition-colors">View All</a>
-      </div>
-      <div id="best-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-        <div class="col-span-4 text-center text-gray-400 py-8">Loading...</div>
-      </div>
-    </section>
-
-    <!-- Explore Our Products -->
-    <section class="max-w-7xl mx-auto px-6 py-10">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="w-5 h-10 bg-red-500 rounded-sm inline-block"></span>
-        <span class="text-red-500 font-semibold text-sm">Our Products</span>
-      </div>
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-3xl font-semibold">Explore Our Products</h2>
-      </div>
-      <div id="explore-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-        <div class="col-span-4 text-center text-gray-400 py-8">Loading...</div>
-      </div>
-      <div class="text-center mt-10">
-        <a href="#/products" class="inline-block border border-gray-300 px-14 py-3 rounded text-sm font-medium hover:bg-gray-50 transition-colors">View All Products</a>
-      </div>
-    </section>
-
-    <!-- Service Badges -->
+<!-- Service Badges -->
     <section class="max-w-7xl mx-auto px-6 py-12 border-t border-gray-200">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
         <div class="flex flex-col items-center gap-3">

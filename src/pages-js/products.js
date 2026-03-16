@@ -8,8 +8,8 @@ export const template = `
     <h1 class="text-2xl font-bold mb-6">All Products</h1>
     <div class="flex gap-6">
       <!-- Sidebar Filters -->
-      <aside class="w-56 flex-shrink-0">
-        <div class="border border-gray-200 rounded-lg p-4 sticky top-20">
+      <aside class="w-56 flex-shrink-0 self-start">
+        <div class="border border-gray-200 rounded-lg p-4">
           <h2 class="font-semibold mb-3">Categories</h2>
           <div class="space-y-2 mb-5">
             <label class="flex items-center gap-2 text-sm cursor-pointer">

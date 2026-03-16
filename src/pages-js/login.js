@@ -4,21 +4,46 @@ import { showToast } from '../components/toast.js';
 
 export const template = `
   <div class="flex min-h-[calc(100vh-12rem)]">
-    <div class="hidden md:flex w-1/2 bg-[#CBE4E8] items-center justify-center">
-      <div class="text-center p-12">
-        <div class="w-64 h-64 mx-auto flex items-center justify-center">
-          <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-            <circle cx="110" cy="110" r="110" fill="#A8D0D8" opacity="0.4"/>
-            <rect x="60" y="50" width="100" height="140" rx="12" fill="white" opacity="0.9"/>
-            <rect x="70" y="65" width="80" height="50" rx="6" fill="#D1E8EC"/>
-            <circle cx="110" cy="170" r="8" fill="#8FC4CB"/>
-            <rect x="75" y="130" width="60" height="6" rx="3" fill="#C5DCE1"/>
-            <rect x="80" y="145" width="50" height="4" rx="2" fill="#D4E8EC"/>
-            <rect x="38" y="148" width="24" height="30" rx="4" fill="#E8B4B8" opacity="0.8"/>
-            <rect x="155" y="148" width="24" height="30" rx="4" fill="#C8D8E8" opacity="0.8"/>
+    <div class="hidden md:flex w-1/2 bg-black items-center justify-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-red-950 opacity-90"></div>
+      <div class="relative z-10 text-center p-12 flex flex-col items-center gap-8">
+        <!-- Shopping bag icon -->
+        <div class="w-24 h-24 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center mb-2">
+          <svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
           </svg>
         </div>
-        <p class="text-base font-medium text-teal-800 mt-4 opacity-60">Your favourite store</p>
+        <!-- Product grid illustration -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span class="text-gray-400 text-xs">Phones</span>
+          </div>
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span class="text-gray-400 text-xs">Laptops</span>
+          </div>
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+            <span class="text-gray-400 text-xs">Audio</span>
+          </div>
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="text-gray-400 text-xs">Cameras</span>
+          </div>
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-gray-400 text-xs">Watches</span>
+          </div>
+          <div class="bg-gray-800 bg-opacity-80 rounded-xl p-3 flex flex-col items-center gap-2 border border-gray-700">
+            <svg class="w-7 h-7 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+            <span class="text-gray-400 text-xs">Gaming</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-white text-lg font-semibold">Welcome to ShopApp</p>
+          <p class="text-gray-400 text-sm mt-1">Your one-stop shop for everything</p>
+        </div>
       </div>
     </div>
     <div class="w-full md:w-1/2 flex items-center justify-center px-8 py-12">
