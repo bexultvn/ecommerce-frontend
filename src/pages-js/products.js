@@ -1,5 +1,6 @@
 import { getAll } from '../services/productService.js';
 import { addToCart } from '../services/cartService.js';
+import { toggleWishlist } from '../services/wishlistService.js';
 import { productCard } from '../components/productCard.js';
 import { showToast } from '../components/toast.js';
 
@@ -201,15 +202,27 @@ export async function init(params = {}) {
     renderProducts();
   });
 
-  // Add to cart via event delegation
+  // Event delegation: cart + wishlist
   grid.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action="add-to-cart"]');
-    if (!btn) return;
-    const productId = btn.getAttribute('data-product-id');
-    const product = allProducts.find(p => String(p.id) === String(productId));
-    if (product) {
-      addToCart(product, 1);
-      showToast(`${product.name} added to cart!`, 'success');
+    const cartBtn = e.target.closest('[data-action="add-to-cart"]');
+    if (cartBtn) {
+      const product = allProducts.find(p => String(p.id) === String(cartBtn.getAttribute('data-product-id')));
+      if (product) { addToCart(product, 1); showToast(`${product.name} added to cart!`, 'success'); }
+      return;
+    }
+
+    const wishBtn = e.target.closest('[data-action="toggle-wishlist"]');
+    if (wishBtn) {
+      const product = allProducts.find(p => String(p.id) === String(wishBtn.getAttribute('data-product-id')));
+      if (!product) return;
+      const added = toggleWishlist(product);
+      const svg = wishBtn.querySelector('svg');
+      svg.setAttribute('fill', added ? 'currentColor' : 'none');
+      wishBtn.classList.toggle('text-red-500', added);
+      wishBtn.classList.toggle('text-gray-300', !added);
+      wishBtn.classList.toggle('opacity-100', added);
+      wishBtn.setAttribute('aria-label', added ? 'Remove from wishlist' : 'Add to wishlist');
+      showToast(added ? `${product.name} added to wishlist!` : 'Removed from wishlist', added ? 'success' : 'info');
     }
   });
 }

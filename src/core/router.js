@@ -13,6 +13,7 @@ const routes = {
   '/orders': () => import('../pages-js/orders.js'),
   '/profile': () => import('../pages-js/profile.js'),
   '/checkout': () => import('../pages-js/checkout.js'),
+  '/wishlist': () => import('../pages-js/wishlist.js'),
 };
 
 function parseHash() {
