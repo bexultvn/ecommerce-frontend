@@ -1,8 +1,8 @@
 const statusConfig = {
-  Processing: { color: 'bg-yellow-100 text-yellow-700 border-yellow-200', dot: 'bg-yellow-400', icon: '⏳' },
-  Shipped:    { color: 'bg-blue-100 text-blue-700 border-blue-200',       dot: 'bg-blue-400',   icon: '🚚' },
-  Delivered:  { color: 'bg-green-100 text-green-700 border-green-200',    dot: 'bg-green-400',  icon: '✅' },
-  Cancelled:  { color: 'bg-red-100 text-red-700 border-red-200',          dot: 'bg-red-400',    icon: '✕'  },
+  Processing: { color: 'bg-amber-50 text-amber-700 border-amber-200',     dot: 'bg-amber-400' },
+  Shipped:    { color: 'bg-blue-50 text-blue-700 border-blue-200',        dot: 'bg-blue-400'  },
+  Delivered:  { color: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
+  Cancelled:  { color: 'bg-red-50 text-red-600 border-red-200',           dot: 'bg-red-400'   },
 };
 
 export function orderCard(order) {

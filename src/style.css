@@ -2,30 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hero animations */
+/* ── Smooth scroll ── */
+html { scroll-behavior: smooth; }
+
+/* ── Page transition ── */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#app > * { animation: page-in 0.25s ease-out; }
+
+/* ── Hero animations ── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50%       { transform: translateY(-10px); }
 }
 @keyframes float-reverse {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(10px); }
+  50%       { transform: translateY(10px); }
 }
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 @keyframes shimmer {
-  0% { background-position: 0% center; }
+  0%   { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
 
-.animate-float { animation: float 3.5s ease-in-out infinite; }
-.animate-float-slow { animation: float 5s ease-in-out infinite; }
-.animate-float-delay { animation: float 4s ease-in-out infinite 1.2s; }
+.animate-float         { animation: float 3.5s ease-in-out infinite; }
+.animate-float-slow    { animation: float 5s ease-in-out infinite; }
+.animate-float-delay   { animation: float 4s ease-in-out infinite 1.2s; }
 .animate-float-reverse { animation: float-reverse 4.5s ease-in-out infinite; }
-.animate-spin-slow { animation: spin-slow 25s linear infinite; }
+.animate-spin-slow     { animation: spin-slow 25s linear infinite; }
 
+/* ── Gradient hero text ── */
 .hero-gradient-text {
   background: linear-gradient(135deg, #ef4444, #f97316, #ec4899, #ef4444);
   background-size: 200% auto;
@@ -34,3 +45,18 @@
   background-clip: text;
   animation: shimmer 4s linear infinite;
 }
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+/* ── Input number: hide spin arrows ── */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+/* ── Focus ring for radio/checkbox ── */
+input[type=radio]:focus,
+input[type=checkbox]:focus { outline: 2px solid #ef4444; outline-offset: 2px; }

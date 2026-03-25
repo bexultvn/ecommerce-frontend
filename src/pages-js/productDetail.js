@@ -2,6 +2,8 @@ import { getById } from '../services/productService.js';
 import { addToCart } from '../services/cartService.js';
 import { toggleWishlist, isInWishlist } from '../services/wishlistService.js';
 import { showToast } from '../components/toast.js';
+import { isLoggedIn } from '../core/auth.js';
+import { navigate } from '../core/router.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
@@ -234,6 +236,7 @@ export async function init(params = {}) {
     });
 
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      if (!isLoggedIn()) { showToast('Please sign in to add items to cart', 'error'); navigate('/login'); return; }
       const q = parseInt(qtyInput.value, 10);
       if (isNaN(q) || q < 1) { showToast('Please enter a valid quantity', 'error'); return; }
       addToCart(product, q);
@@ -241,6 +244,7 @@ export async function init(params = {}) {
     });
 
     document.getElementById('wishlist-btn').addEventListener('click', (e) => {
+      if (!isLoggedIn()) { showToast('Please sign in to save items to wishlist', 'error'); navigate('/login'); return; }
       const btn = e.currentTarget;
       const added = toggleWishlist(product);
       btn.classList.toggle('text-red-500', added);

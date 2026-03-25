@@ -3,90 +3,109 @@ import { addToCart } from '../services/cartService.js';
 import { toggleWishlist } from '../services/wishlistService.js';
 import { productCard } from '../components/productCard.js';
 import { showToast } from '../components/toast.js';
+import { isLoggedIn } from '../core/auth.js';
+import { navigate } from '../core/router.js';
 
 export const template = `
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-6">All Products</h1>
-    <div class="flex gap-6">
-      <!-- Sidebar Filters -->
-      <aside class="w-56 flex-shrink-0 self-start">
-        <div class="border border-gray-200 rounded-lg p-4">
-          <h2 class="font-semibold mb-3">Categories</h2>
-          <div class="space-y-2 mb-5">
-            <label class="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" class="category-filter" value="Electronics" /> Electronics
-            </label>
-            <label class="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" class="category-filter" value="Clothing" /> Clothing
-            </label>
-            <label class="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" class="category-filter" value="Books" /> Books
-            </label>
-            <label class="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" class="category-filter" value="Home" /> Home
-            </label>
-          </div>
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6 py-8">
 
-          <h2 class="font-semibold mb-3">Price Range</h2>
-          <div class="space-y-2 mb-5">
-            <div class="flex gap-2">
-              <input
-                type="number"
-                id="price-min"
-                class="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                placeholder="Min"
-                min="0"
-              />
-              <input
-                type="number"
-                id="price-max"
-                class="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                placeholder="Max"
-                min="0"
-              />
+      <!-- Page Header -->
+      <div class="mb-8">
+        <nav class="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
+          <a href="#/" class="hover:text-gray-600 transition-colors">Home</a>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <span class="text-gray-700 font-medium">Products</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">All Products</h1>
+      </div>
+
+      <div class="flex gap-7">
+
+        <!-- Sidebar Filters -->
+        <aside class="w-52 flex-shrink-0 self-start sticky top-24 hidden md:block">
+          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+            <!-- Filter Header -->
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <span class="text-sm font-bold text-gray-900">Filters</span>
+              <button id="clear-filters" class="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                Clear
+              </button>
             </div>
-            <button
-              id="apply-price"
-              class="w-full border border-gray-300 text-sm py-1.5 rounded hover:bg-gray-50"
-            >
-              Apply
-            </button>
+
+            <div class="px-5 py-4 space-y-5">
+              <!-- Categories -->
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Categories</p>
+                <div class="space-y-2.5">
+                  ${[['Electronics','Electronics'],['Clothing','Clothing'],['Books','Books'],['Home','Home']].map(([val, label]) => `
+                  <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="checkbox" class="category-filter accent-red-500 w-4 h-4 rounded cursor-pointer" value="${val}" />
+                    <span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors select-none">${label}</span>
+                  </label>`).join('')}
+                </div>
+              </div>
+
+              <div class="border-t border-gray-100"></div>
+
+              <!-- Price Range -->
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Price Range</p>
+                <div class="flex gap-2 mb-3">
+                  <div class="flex-1 relative">
+                    <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">$</span>
+                    <input type="number" id="price-min"
+                           class="w-full pl-5 pr-2 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition bg-gray-50"
+                           placeholder="Min" min="0" />
+                  </div>
+                  <div class="flex-1 relative">
+                    <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">$</span>
+                    <input type="number" id="price-max"
+                           class="w-full pl-5 pr-2 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition bg-gray-50"
+                           placeholder="Max" min="0" />
+                  </div>
+                </div>
+                <button id="apply-price"
+                        class="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2 rounded-lg transition-colors">
+                  Apply Price
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0">
+          <!-- Search + Sort Bar -->
+          <div class="flex gap-3 mb-5">
+            <div class="flex-1 relative">
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="text" id="search-input"
+                     class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 shadow-sm transition placeholder-gray-400"
+                     placeholder="Search products..." />
+            </div>
+            <select id="sort-select"
+                    class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-red-200 cursor-pointer shadow-sm min-w-[160px] text-gray-700">
+              <option value="">Sort by</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+              <option value="name-asc">Name: A → Z</option>
+            </select>
           </div>
 
-          <button
-            id="clear-filters"
-            class="w-full text-sm text-gray-500 hover:text-black underline text-left"
-          >
-            Clear all filters
-          </button>
-        </div>
-      </aside>
+          <!-- Results count -->
+          <div id="results-info" class="text-xs font-medium text-gray-400 mb-4"></div>
 
-      <!-- Main Content -->
-      <main class="flex-1 min-w-0">
-        <div class="flex gap-3 mb-6">
-          <input
-            type="text"
-            id="search-input"
-            class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            placeholder="Search products..."
-          />
-          <select
-            id="sort-select"
-            class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none"
-          >
-            <option value="">Sort by</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="name-asc">Name: A-Z</option>
-          </select>
-        </div>
-
-        <div id="results-info" class="text-sm text-gray-500 mb-4"></div>
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div class="col-span-3 text-center text-gray-400 py-12">Loading...</div>
-        </div>
-      </main>
+          <!-- Grid -->
+          <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            ${[...Array(8)].map(() => `<div class="rounded-2xl bg-gray-100 animate-pulse" style="height:280px;"></div>`).join('')}
+          </div>
+        </main>
+      </div>
     </div>
   </div>
 `;
@@ -112,7 +131,7 @@ export async function init(params = {}) {
   try {
     allProducts = await getAll();
   } catch (e) {
-    grid.innerHTML = '<div class="col-span-3 text-center text-gray-400 py-12">Failed to load products.</div>';
+    grid.innerHTML = '<div class="col-span-4 text-center text-gray-400 py-12">Failed to load products.</div>';
     return;
   }
 
@@ -146,7 +165,13 @@ export async function init(params = {}) {
     info.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} found`;
 
     if (products.length === 0) {
-      grid.innerHTML = '<div class="col-span-3 text-center text-gray-400 py-12">No products match your filters.</div>';
+      grid.innerHTML = `<div class="col-span-4 flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <p class="text-gray-500 font-semibold mb-1">No products found</p>
+        <p class="text-sm text-gray-400">Try adjusting your filters or search term</p>
+      </div>`;
     } else {
       grid.innerHTML = products.map(p => productCard(p)).join('');
     }
@@ -206,6 +231,7 @@ export async function init(params = {}) {
   grid.addEventListener('click', (e) => {
     const cartBtn = e.target.closest('[data-action="add-to-cart"]');
     if (cartBtn) {
+      if (!isLoggedIn()) { showToast('Please sign in to add items to cart', 'error'); navigate('/login'); return; }
       const product = allProducts.find(p => String(p.id) === String(cartBtn.getAttribute('data-product-id')));
       if (product) { addToCart(product, 1); showToast(`${product.name} added to cart!`, 'success'); }
       return;
@@ -213,6 +239,7 @@ export async function init(params = {}) {
 
     const wishBtn = e.target.closest('[data-action="toggle-wishlist"]');
     if (wishBtn) {
+      if (!isLoggedIn()) { showToast('Please sign in to save items to wishlist', 'error'); navigate('/login'); return; }
       const product = allProducts.find(p => String(p.id) === String(wishBtn.getAttribute('data-product-id')));
       if (!product) return;
       const added = toggleWishlist(product);
