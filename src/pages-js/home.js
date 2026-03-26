@@ -137,40 +137,6 @@ export const template = `
       </div>
     </section>
 
-    <!-- Flash Sales -->
-    <section class="max-w-7xl mx-auto px-6 py-10 border-t border-gray-100">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="w-4 h-9 bg-red-500 rounded-sm inline-block"></span>
-        <span class="text-red-500 font-semibold text-sm tracking-wide">Today's</span>
-      </div>
-      <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Flash Sales</h2>
-        <div class="flex items-center gap-2">
-          <div class="text-center">
-            <p class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Hours</p>
-            <div id="cd-hours" class="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold tabular-nums">03</div>
-          </div>
-          <span class="text-xl font-bold text-red-500 pb-4">:</span>
-          <div class="text-center">
-            <p class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Mins</p>
-            <div id="cd-mins" class="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold tabular-nums">59</div>
-          </div>
-          <span class="text-xl font-bold text-red-500 pb-4">:</span>
-          <div class="text-center">
-            <p class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Secs</p>
-            <div id="cd-secs" class="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold tabular-nums">59</div>
-          </div>
-        </div>
-        <a href="#/products" class="ml-auto text-sm font-semibold text-gray-900 hover:text-red-500 transition-colors flex items-center gap-1 hidden sm:flex">
-          View All
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-      <div id="flash-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        ${[...Array(5)].map(() => `<div class="rounded-xl bg-gray-100 animate-pulse" style="height:260px;"></div>`).join('')}
-      </div>
-    </section>
-
     <!-- Best Sellers -->
     <section class="max-w-7xl mx-auto px-6 py-10 border-t border-gray-100">
       <div class="flex items-center gap-3 mb-4">
@@ -250,43 +216,19 @@ export const template = `
 `;
 
 export async function init() {
-  // Countdown timer
-  const endTime = Date.now() + (3 * 3600 + 59 * 60 + 59) * 1000;
-  function updateCountdown() {
-    const diff = Math.max(0, endTime - Date.now());
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    const pad = n => String(n).padStart(2, '0');
-    const hEl = document.getElementById('cd-hours');
-    const mEl = document.getElementById('cd-mins');
-    const sEl = document.getElementById('cd-secs');
-    if (hEl) hEl.textContent = pad(h);
-    if (mEl) mEl.textContent = pad(m);
-    if (sEl) sEl.textContent = pad(s);
-  }
-  updateCountdown();
-  const cdTimer = setInterval(updateCountdown, 1000);
-
   let allProducts = [];
   try {
     allProducts = await getAll();
   } catch (e) {
-    const flashGrid = document.getElementById('flash-grid');
-    if (flashGrid) flashGrid.innerHTML = '<div class="col-span-5 text-center text-gray-400 py-8">Failed to load products.</div>';
-    clearInterval(cdTimer);
     return;
   }
 
-  const flashGrid = document.getElementById('flash-grid');
   const bestGrid = document.getElementById('best-grid');
   const exploreGrid = document.getElementById('explore-grid');
 
-  const flashProducts = allProducts.slice(0, 5);
   const bestProducts = allProducts.slice(0, 4);
   const exploreProducts = allProducts.slice(0, 8);
 
-  if (flashGrid) flashGrid.innerHTML = flashProducts.length ? flashProducts.map(p => productCard(p)).join('') : '<div class="col-span-5 text-center text-gray-400 py-8">No products.</div>';
   if (bestGrid) bestGrid.innerHTML = bestProducts.length ? bestProducts.map(p => productCard(p)).join('') : '<div class="col-span-4 text-center text-gray-400 py-8">No products.</div>';
   if (exploreGrid) exploreGrid.innerHTML = exploreProducts.length ? exploreProducts.map(p => productCard(p)).join('') : '<div class="col-span-4 text-center text-gray-400 py-8">No products.</div>';
 
@@ -299,7 +241,7 @@ export async function init() {
   });
 
   // Event delegation: cart + wishlist on all grids
-  [flashGrid, bestGrid, exploreGrid].forEach(grid => {
+  [bestGrid, exploreGrid].forEach(grid => {
     if (!grid) return;
     grid.addEventListener('click', (e) => {
       const cartBtn = e.target.closest('[data-action="add-to-cart"]');
