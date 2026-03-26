@@ -5,16 +5,16 @@ import { eventBus } from '../core/eventBus.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Page Header -->
-      <div class="flex items-center justify-between mb-10">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">My Wishlist</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">My Wishlist</h1>
           <p id="wishlist-subtitle" class="text-gray-400 text-sm mt-1"></p>
         </div>
         <a href="#/products"
-           class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+           class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
@@ -84,7 +84,7 @@ function renderWishlist() {
             }
             <!-- Remove button -->
             <button
-              class="remove-btn absolute top-3 right-3 w-8 h-8 rounded-full bg-white border border-gray-100 shadow flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 transition-all duration-200 opacity-0 group-hover:opacity-100"
+              class="remove-btn absolute top-3 right-3 w-8 h-8 rounded-full bg-white border border-gray-100 shadow flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 transition-all duration-200 sm:opacity-0 sm:group-hover:opacity-100"
               data-id="${item.productId}"
               aria-label="Remove from wishlist"
               title="Remove">

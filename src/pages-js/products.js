@@ -8,7 +8,7 @@ import { navigate } from '../core/router.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Page Header -->
       <div class="mb-8">
@@ -22,12 +22,22 @@ export const template = `
 
       <div class="flex gap-7">
 
+        <!-- Mobile filter backdrop -->
+        <div id="filter-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
         <!-- Sidebar Filters -->
-        <aside class="w-52 flex-shrink-0 self-start sticky top-24 hidden md:block">
+        <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-white overflow-y-auto -translate-x-full transition-transform duration-300 md:sticky md:inset-auto md:w-52 md:translate-x-0 md:overflow-visible md:bg-transparent md:flex-shrink-0 md:self-start md:top-24">
           <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
             <!-- Filter Header -->
             <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <button id="close-filter-btn"
+                class="md:hidden -ml-1 w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+                aria-label="Close filters">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
               <span class="text-sm font-bold text-gray-900">Filters</span>
               <button id="clear-filters" class="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -79,7 +89,14 @@ export const template = `
         <!-- Main Content -->
         <main class="flex-1 min-w-0">
           <!-- Search + Sort Bar -->
-          <div class="flex gap-3 mb-5">
+          <div class="flex flex-wrap gap-3 mb-5">
+            <button id="mobile-filter-btn"
+              class="md:hidden flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white shadow-sm text-gray-700 flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+              </svg>
+              Filters
+            </button>
             <div class="flex-1 relative">
               <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -89,7 +106,7 @@ export const template = `
                      placeholder="Search products..." />
             </div>
             <select id="sort-select"
-                    class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-red-200 cursor-pointer shadow-sm min-w-[160px] text-gray-700">
+                    class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-red-200 cursor-pointer shadow-sm min-w-[160px] w-full sm:w-auto text-gray-700">
               <option value="">Sort by</option>
               <option value="price-asc">Price: Low → High</option>
               <option value="price-desc">Price: High → Low</option>
@@ -127,6 +144,30 @@ export async function init(params = {}) {
 
   const grid = document.getElementById('products-grid');
   const info = document.getElementById('results-info');
+
+  // Mobile filter drawer
+  const aside = document.querySelector('aside');
+  const backdrop = document.getElementById('filter-backdrop');
+  const mobileFilterBtn = document.getElementById('mobile-filter-btn');
+  const closeFilterBtn = document.getElementById('close-filter-btn');
+
+  function openDrawer() {
+    aside.classList.remove('-translate-x-full');
+    aside.classList.add('translate-x-0');
+    backdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    aside.classList.remove('translate-x-0');
+    aside.classList.add('-translate-x-full');
+    backdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  mobileFilterBtn?.addEventListener('click', openDrawer);
+  closeFilterBtn?.addEventListener('click', closeDrawer);
+  backdrop?.addEventListener('click', closeDrawer);
+  window.addEventListener('hashchange', () => { document.body.style.overflow = ''; }, { once: true });
 
   try {
     allProducts = await getAll();
@@ -184,6 +225,7 @@ export async function init(params = {}) {
     cb.addEventListener('change', () => {
       activeCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(c => c.value);
       renderProducts();
+      closeDrawer();
     });
   });
 
@@ -210,6 +252,7 @@ export async function init(params = {}) {
     minPrice = minVal !== '' ? parseFloat(minVal) : undefined;
     maxPrice = maxVal !== '' ? parseFloat(maxVal) : undefined;
     renderProducts();
+    closeDrawer();
   });
 
   // Clear filters
@@ -225,6 +268,7 @@ export async function init(params = {}) {
     document.getElementById('price-min').value = '';
     document.getElementById('price-max').value = '';
     renderProducts();
+    closeDrawer();
   });
 
   // Event delegation: cart + wishlist

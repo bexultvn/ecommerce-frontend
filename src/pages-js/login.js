@@ -46,10 +46,10 @@ export const template = `
         </div>
       </div>
     </div>
-    <div class="w-full md:w-1/2 flex items-center justify-center px-8 py-12">
+    <div class="w-full md:w-1/2 flex items-center justify-center px-5 sm:px-8 py-10 sm:py-12">
       <div class="w-full max-w-sm">
         <div id="login-panel">
-          <h1 class="text-3xl font-semibold mb-2">Log in to ShopApp</h1>
+          <h1 class="text-2xl sm:text-3xl font-semibold mb-2">Log in to ShopApp</h1>
           <p class="text-gray-500 text-sm mb-8">Enter your details below</p>
           <form id="login-form" class="space-y-7">
             <div class="border-b border-gray-300 pb-1 focus-within:border-red-500 transition-colors">
@@ -70,7 +70,7 @@ export const template = `
           </form>
         </div>
         <div id="register-panel" class="hidden">
-          <h1 class="text-3xl font-semibold mb-2">Create an account</h1>
+          <h1 class="text-2xl sm:text-3xl font-semibold mb-2">Create an account</h1>
           <p class="text-gray-500 text-sm mb-8">Enter your details below</p>
           <form id="register-form" class="space-y-6">
             <div class="grid grid-cols-2 gap-4">

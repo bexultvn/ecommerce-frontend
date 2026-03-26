@@ -5,7 +5,7 @@ import { config } from '../config/config.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-3xl mx-auto px-6 py-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
       <div class="flex items-center gap-4 mb-8">
         <div class="w-11 h-11 rounded-2xl bg-red-50 flex items-center justify-center flex-shrink-0">
           <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

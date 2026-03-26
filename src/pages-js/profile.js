@@ -3,8 +3,19 @@ import { updateUser, changePassword } from '../services/userService.js';
 import { showToast } from '../components/toast.js';
 
 export const template = `
-  <div class="max-w-6xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="min-h-screen bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+      <!-- Profile Header -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6 flex items-center gap-4">
+        <div id="profile-avatar" class="w-14 h-14 rounded-full bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center text-2xl font-bold flex-shrink-0"></div>
+        <div class="min-w-0">
+          <h1 id="profile-display-name" class="text-lg font-bold text-gray-900 truncate"></h1>
+          <p id="profile-display-email" class="text-sm text-gray-400 truncate"></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <!-- Personal Info -->
         <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 flex flex-col">
@@ -13,7 +24,7 @@ export const template = `
             Personal Information
           </h2>
           <form id="profile-form" class="flex flex-col flex-1 gap-4">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">First Name</label>
                 <input type="text" id="profile-firstname" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent transition" />
@@ -23,7 +34,7 @@ export const template = `
                 <input type="text" id="profile-lastname" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent transition" />
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">Email</label>
                 <input type="email" id="profile-email" class="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none text-gray-400 cursor-not-allowed" readonly />
@@ -33,7 +44,7 @@ export const template = `
                 <input type="text" id="profile-street" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent transition" placeholder="Street address" />
               </div>
             </div>
-            <div class="flex justify-end gap-3 mt-auto pt-2">
+            <div class="flex flex-wrap justify-end gap-3 mt-auto pt-2">
               <button type="button" id="cancel-btn" class="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
               <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">Save Changes</button>
             </div>
@@ -51,7 +62,7 @@ export const template = `
               <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">Current Password</label>
               <input type="password" id="old-password" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent transition" placeholder="••••••••" />
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">New Password</label>
                 <input type="password" id="new-password" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent transition" placeholder="••••••••" />
@@ -67,6 +78,7 @@ export const template = `
           </form>
         </div>
 
+      </div>
     </div>
   </div>
 `;
@@ -75,8 +87,18 @@ export async function init() {
   const user = getCurrentUser();
   if (!user) return;
 
-
   const addr = user.address || {};
+  const displayName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'Account';
+
+  // Populate header
+  const avatar = document.getElementById('profile-avatar');
+  if (avatar) avatar.textContent = displayName.charAt(0).toUpperCase();
+  const nameEl = document.getElementById('profile-display-name');
+  if (nameEl) nameEl.textContent = displayName;
+  const emailEl = document.getElementById('profile-display-email');
+  if (emailEl) emailEl.textContent = user.email || '';
+
+  // Populate form fields
   document.getElementById('profile-firstname').value = user.firstName || '';
   document.getElementById('profile-lastname').value = user.lastName || '';
   document.getElementById('profile-email').value = user.email || '';

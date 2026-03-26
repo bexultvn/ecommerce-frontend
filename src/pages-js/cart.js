@@ -9,15 +9,15 @@ const SHIPPING_COST = 5.99;
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-8">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Shopping Cart</h1>
           <p id="cart-item-count" class="text-sm text-gray-400 mt-0.5"></p>
         </div>
-        <a href="#/products" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+        <a href="#/products" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
           Continue Shopping
         </a>

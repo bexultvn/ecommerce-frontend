@@ -129,10 +129,11 @@ function getNavbarHTML() {
       </div>
 
       <!-- Mobile Menu -->
-      <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
+      <div id="mobile-menu" class="hidden md:hidden fixed top-16 left-0 right-0 bg-white border-t border-gray-100 shadow-xl px-4 py-3 space-y-1 z-40">
         ${mobileNavLink('#/', 'Home')}
         ${mobileNavLink('#/products', 'Products')}
         ${loggedIn ? mobileNavLink('#/orders', 'My Orders') : ''}
+        ${loggedIn ? mobileNavLink('#/profile', 'My Account') : ''}
         ${mobileNavLink('#/wishlist', 'Wishlist')}
         ${mobileNavLink('#/cart', 'Cart')}
         <div class="border-t border-gray-100 my-2 pt-2">

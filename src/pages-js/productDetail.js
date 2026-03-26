@@ -7,7 +7,7 @@ import { navigate } from '../core/router.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm text-gray-400 mb-10">
         <a href="#/" class="hover:text-gray-700 transition-colors">Home</a>
@@ -129,7 +129,7 @@ export async function init(params = {}) {
         </span>
 
         <!-- Name -->
-        <h1 class="text-3xl font-bold text-gray-900 leading-tight">${product.name}</h1>
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">${product.name}</h1>
 
         <!-- Rating + stock -->
         <div class="flex items-center gap-3 flex-wrap">
@@ -142,7 +142,7 @@ export async function init(params = {}) {
 
         <!-- Price -->
         <div class="flex items-baseline gap-3">
-          <span class="text-4xl font-black text-gray-900">$${Number(product.price).toFixed(2)}</span>
+          <span class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900">$${Number(product.price).toFixed(2)}</span>
         </div>
 
         <hr class="border-gray-100"/>

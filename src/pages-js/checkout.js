@@ -16,25 +16,25 @@ const PAYMENT_ICONS = {
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-5xl mx-auto px-6 py-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
       <!-- Step Indicator -->
       <div class="flex items-center justify-center gap-0 mb-10">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center text-xs font-bold">
+        <div class="flex items-center gap-1.5">
+          <div class="w-7 h-7 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
           </div>
-          <span class="text-xs font-medium text-gray-400">Cart</span>
+          <span class="text-xs font-medium text-gray-400 hidden sm:inline">Cart</span>
         </div>
-        <div class="w-12 h-px bg-gray-300 mx-3"></div>
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold">2</div>
+        <div class="w-8 sm:w-12 h-px bg-gray-300 mx-2 sm:mx-3"></div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
           <span class="text-xs font-semibold text-gray-900">Checkout</span>
         </div>
-        <div class="w-12 h-px bg-gray-200 mx-3"></div>
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-xs font-bold">3</div>
-          <span class="text-xs font-medium text-gray-400">Confirmation</span>
+        <div class="w-8 sm:w-12 h-px bg-gray-200 mx-2 sm:mx-3"></div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-7 h-7 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+          <span class="text-xs font-medium text-gray-400 hidden sm:inline">Confirmation</span>
         </div>
       </div>
 

@@ -9,13 +9,13 @@ import { isLoggedIn } from '../core/auth.js';
 export const template = `
   <div>
     <!-- Hero Section -->
-    <section class="relative bg-black text-white overflow-hidden" style="min-height:640px;">
+    <section class="relative bg-black text-white overflow-hidden min-h-[480px] lg:min-h-[640px]">
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 right-0 rounded-full opacity-25 blur-[120px]" style="width:520px;height:520px;background:radial-gradient(circle,#ef4444,#ec4899);transform:translate(30%,-30%);"></div>
         <div class="absolute bottom-0 left-0 rounded-full opacity-15 blur-[100px]" style="width:400px;height:400px;background:radial-gradient(circle,#6366f1,#8b5cf6);transform:translate(-30%,30%);"></div>
         <div class="absolute inset-0" style="background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:64px 64px;"></div>
       </div>
-      <div class="relative max-w-7xl mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-16" style="min-height:640px;">
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 flex flex-col lg:flex-row items-center gap-16 min-h-[480px] lg:min-h-[640px]">
         <div class="flex-1 space-y-8 z-10 text-center lg:text-left">
           <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 border text-sm font-medium" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.25);color:#f87171;">
             <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse inline-block"></span>
@@ -56,7 +56,7 @@ export const template = `
             </div>
           </div>
         </div>
-        <div class="flex-1 flex justify-center items-center relative" style="min-height:420px;">
+        <div class="flex-1 hidden lg:flex justify-center items-center relative" style="min-height:420px;">
           <div class="absolute rounded-full animate-spin-slow pointer-events-none" style="width:340px;height:340px;border:1px dashed rgba(239,68,68,0.25);"></div>
           <div class="absolute rounded-full pointer-events-none" style="width:260px;height:260px;border:1px solid rgba(239,68,68,0.1);animation:spin-slow 18s linear infinite reverse;"></div>
           <div class="absolute rounded-full pointer-events-none" style="width:160px;height:160px;background:radial-gradient(circle,rgba(239,68,68,0.3),transparent);filter:blur(30px);"></div>
@@ -101,7 +101,7 @@ export const template = `
     </section>
 
     <!-- Browse By Category -->
-    <section class="max-w-7xl mx-auto px-6 py-10">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-4 h-9 bg-red-500 rounded-sm inline-block"></span>
         <span class="text-red-500 font-semibold text-sm tracking-wide">Categories</span>
@@ -109,7 +109,7 @@ export const template = `
       <div class="flex items-center justify-between mb-7">
         <h2 class="text-2xl font-bold text-gray-900">Browse By Category</h2>
       </div>
-      <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <button class="category-btn group border border-gray-200 rounded-xl p-4 flex flex-col items-center gap-2.5 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200" data-category="Electronics">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
           <span class="text-xs font-semibold">Phones</span>
@@ -138,7 +138,7 @@ export const template = `
     </section>
 
     <!-- Best Sellers -->
-    <section class="max-w-7xl mx-auto px-6 py-10 border-t border-gray-100">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-gray-100">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-4 h-9 bg-red-500 rounded-sm inline-block"></span>
         <span class="text-red-500 font-semibold text-sm tracking-wide">This Month</span>
@@ -156,7 +156,7 @@ export const template = `
     </section>
 
     <!-- Explore Products -->
-    <section class="max-w-7xl mx-auto px-6 py-10 border-t border-gray-100">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-gray-100">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-4 h-9 bg-red-500 rounded-sm inline-block"></span>
         <span class="text-red-500 font-semibold text-sm tracking-wide">Our Products</span>
@@ -175,7 +175,7 @@ export const template = `
     </section>
 
     <!-- Service Badges -->
-    <section class="max-w-7xl mx-auto px-6 py-14 border-t border-gray-200 mt-4">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14 border-t border-gray-200 mt-4">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
         <div class="flex flex-col items-center gap-4">
           <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">

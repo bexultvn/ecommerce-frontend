@@ -29,7 +29,7 @@ export function productCard(product) {
           class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 shadow-sm
             ${wishlisted
               ? 'bg-white text-red-500'
-              : 'bg-white text-gray-300 opacity-0 group-hover:opacity-100 hover:text-red-400'}"
+              : 'bg-white text-gray-300 sm:opacity-0 sm:group-hover:opacity-100 hover:text-red-400'}"
           data-action="toggle-wishlist"
           data-product-id="${product.id}"
           aria-label="${wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}"
@@ -41,7 +41,7 @@ export function productCard(product) {
 
         <!-- Add to cart overlay -->
         <button
-          class="absolute bottom-0 left-0 right-0 bg-gray-900 text-white text-xs py-2.5 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-1.5"
+          class="absolute bottom-0 left-0 right-0 bg-gray-900 text-white text-xs py-2.5 font-semibold sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-1.5"
           data-action="add-to-cart"
           data-product-id="${product.id}"
         >
