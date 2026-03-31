@@ -1,6 +1,7 @@
 import { getCurrentUser } from '../services/authService.js';
-import { updateUser, changePassword } from '../services/userService.js';
+import { getUserById, updateUser, changePassword } from '../services/userService.js';
 import { showToast } from '../components/toast.js';
+import { config } from '../config/config.js';
 
 export const template = `
   <div class="min-h-screen bg-gray-50">
@@ -84,8 +85,15 @@ export const template = `
 `;
 
 export async function init() {
-  const user = getCurrentUser();
-  if (!user) return;
+  const authUser = getCurrentUser();
+  if (!authUser) return;
+
+  const userId = authUser.uid || authUser.id;
+  let user = authUser;
+  if (!config.USE_MOCK) {
+    const profile = await getUserById(userId);
+    if (profile) user = { ...authUser, firstName: profile.firstName, lastName: profile.lastName };
+  }
 
   const addr = user.address || {};
   const displayName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'Account';
@@ -122,7 +130,7 @@ export async function init() {
     if (!lastName) { showToast('Last name cannot be empty', 'error'); return; }
 
     try {
-      await updateUser(user.id, { firstName, lastName, address: { street, houseNumber: addr.houseNumber || '', zipCode: addr.zipCode || '' } });
+      await updateUser(userId, { firstName, lastName, address: { street, houseNumber: addr.houseNumber || '', zipCode: addr.zipCode || '' } });
       showToast('Profile updated successfully', 'success');
     } catch (err) {
       showToast(err.message, 'error');
@@ -140,7 +148,7 @@ export async function init() {
     if (newPass !== confirmPass) { showToast('Passwords do not match', 'error'); return; }
 
     try {
-      changePassword(user.id, oldPass, newPass);
+      changePassword(userId, oldPass, newPass);
       document.getElementById('password-form').reset();
       showToast('Password updated successfully', 'success');
     } catch (err) {
