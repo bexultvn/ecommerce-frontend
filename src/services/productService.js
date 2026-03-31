@@ -4,13 +4,13 @@ import { config } from '../config/config.js';
 
 function normalize(p) {
   return {
-    id: p.id,
+    id: p.uid || p.id,
     name: p.name,
     description: p.description,
-    price: p.price,
-    availableQuantity: p.availableQuantity,
-    categoryName: p.categoryName,
-    categoryId: p.categoryId,
+    price: typeof p.price === 'string' ? parseFloat(p.price) : p.price,
+    availableQuantity: p.available_quantity ?? p.availableQuantity ?? null,
+    categoryName: p.categoryName || null,
+    categoryId: p.categoryId || null,
     image: p.image || null
   };
 }
