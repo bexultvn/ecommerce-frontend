@@ -1,11 +1,11 @@
 import { config } from '../config/config.js';
-import { getUser } from '../core/auth.js';
+import { getAccessToken } from '../core/auth.js';
 
 function getAuthHeaders() {
-  const user = getUser();
   const headers = { 'Content-Type': 'application/json' };
-  if (user && user.token) {
-    headers['Authorization'] = `Bearer ${user.token}`;
+  const token = getAccessToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
   return headers;
 }

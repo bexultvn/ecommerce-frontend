@@ -66,7 +66,6 @@ export const template = `
               Don't have an account?
               <button type="button" id="go-register" class="font-semibold underline hover:text-black ml-1">Create Account</button>
             </p>
-            <p class="text-xs text-gray-400 text-center">Demo: john@example.com / password123</p>
           </form>
         </div>
         <div id="register-panel" class="hidden">
@@ -116,21 +115,21 @@ export function init() {
   document.getElementById('forgot-link').addEventListener('click', () => {
     showToast('Password reset not available in demo mode', 'info');
   });
-  document.getElementById('login-form').addEventListener('submit', (e) => {
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     if (!email) { showToast('Please enter your email', 'error'); return; }
     if (!password) { showToast('Please enter your password', 'error'); return; }
     try {
-      login(email, password);
+      await login(email, password);
       showToast('Welcome back!', 'success');
       navigate('/');
     } catch (err) {
       showToast(err.message, 'error');
     }
   });
-  document.getElementById('register-form').addEventListener('submit', (e) => {
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const firstName = document.getElementById('reg-firstname').value.trim();
     const lastName = document.getElementById('reg-lastname').value.trim();
@@ -143,7 +142,7 @@ export function init() {
     if (!password || password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
     if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
     try {
-      register({ firstName, lastName, email, password });
+      await register({ firstName, lastName, email, password });
       showToast('Account created! Welcome!', 'success');
       navigate('/');
     } catch (err) {
