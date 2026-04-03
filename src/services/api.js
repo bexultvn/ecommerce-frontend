@@ -51,6 +51,20 @@ export async function apiPut(path, body) {
   return res.json();
 }
 
+export async function apiPatch(path, body) {
+  if (config.USE_MOCK) {
+    console.log(`[Mock] PATCH ${path}`, body);
+    throw new Error('Mock mode: use service layer directly');
+  }
+  const res = await fetch(`${config.BASE_URL}${path}`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`PATCH ${path} failed: ${res.status}`);
+  return res.json();
+}
+
 export async function apiDelete(path) {
   if (config.USE_MOCK) {
     console.log(`[Mock] DELETE ${path}`);
@@ -61,5 +75,6 @@ export async function apiDelete(path) {
     headers: getAuthHeaders()
   });
   if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
+  if (res.status === 204) return null;
   return res.json();
 }
