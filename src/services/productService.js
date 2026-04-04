@@ -16,7 +16,7 @@ function normalize(p) {
 }
 
 export async function getAll(filters = {}) {
-  const raw = config.USE_MOCK
+  const raw = config.MOCK.product
     ? lsGetAll('products')
     : await apiGet('/products');
 
@@ -63,7 +63,7 @@ export async function getAll(filters = {}) {
 }
 
 export async function getById(id) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.product) {
     const raw = lsGetAll('products').find(p => p.id === String(id));
     return raw ? normalize(raw) : null;
   }

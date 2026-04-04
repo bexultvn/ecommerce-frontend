@@ -28,12 +28,12 @@ export const template = `
   </div>
 `;
 
-function renderCart() {
+async function renderCart() {
   const content = document.getElementById('cart-content');
   const countEl = document.getElementById('cart-item-count');
   if (!content) return;
 
-  const cart = getCart();
+  const cart = await getCart();
   const totalItems = cart.reduce((s, i) => s + i.qty, 0);
 
   if (countEl) {
@@ -193,24 +193,26 @@ function renderCart() {
   });
 
   // Item actions (delegation)
-  document.getElementById('cart-items-list').addEventListener('click', (e) => {
+  document.getElementById('cart-items-list').addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
     const productId = btn.getAttribute('data-product-id');
     const action = btn.getAttribute('data-action');
 
     if (action === 'remove-item') {
-      removeFromCart(productId);
+      await removeFromCart(productId);
       showToast('Item removed', 'info');
       renderCart();
     } else if (action === 'increase-qty') {
-      const item = getCart().find(i => i.productId === productId);
-      if (item) { updateQty(productId, item.qty + 1); renderCart(); }
+      const cart = await getCart();
+      const item = cart.find(i => i.productId === productId);
+      if (item) { await updateQty(productId, item.qty + 1); renderCart(); }
     } else if (action === 'decrease-qty') {
-      const item = getCart().find(i => i.productId === productId);
+      const cart = await getCart();
+      const item = cart.find(i => i.productId === productId);
       if (item) {
-        if (item.qty <= 1) { removeFromCart(productId); showToast('Item removed', 'info'); }
-        else updateQty(productId, item.qty - 1);
+        if (item.qty <= 1) { await removeFromCart(productId); showToast('Item removed', 'info'); }
+        else await updateQty(productId, item.qty - 1);
         renderCart();
       }
     }

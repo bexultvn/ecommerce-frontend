@@ -71,11 +71,11 @@ async function apiRegister({ firstName, lastName, email, password }) {
 // ── Public API ───────────────────────────────────────────────────────────────
 
 export async function login(email, password) {
-  return config.USE_MOCK ? mockLogin(email, password) : apiLogin(email, password);
+  return config.MOCK.auth ? mockLogin(email, password) : apiLogin(email, password);
 }
 
 export async function register(data) {
-  return config.USE_MOCK ? mockRegister(data) : apiRegister(data);
+  return config.MOCK.auth ? mockRegister(data) : apiRegister(data);
 }
 
 export function logout() {

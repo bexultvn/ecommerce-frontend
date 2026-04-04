@@ -56,15 +56,15 @@ async function apiGetUserById(uid) {
 // ── Public API ───────────────────────────────────────────────────────────────
 
 export async function getUserById(id) {
-  return config.USE_MOCK ? mockGetUserById(id) : apiGetUserById(id);
+  return config.MOCK.user ? mockGetUserById(id) : apiGetUserById(id);
 }
 
 export async function updateUser(id, data) {
-  if (!config.USE_MOCK) throw new Error('Profile update not supported yet');
+  if (!config.MOCK.user) throw new Error('Profile update not supported yet');
   mockUpdateUser(id, data);
 }
 
 export function changePassword(id, oldPass, newPass) {
-  if (!config.USE_MOCK) throw new Error('Password change not supported yet');
+  if (!config.MOCK.user) throw new Error('Password change not supported yet');
   return mockChangePassword(id, oldPass, newPass);
 }

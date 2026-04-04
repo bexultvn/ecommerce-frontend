@@ -127,31 +127,31 @@ async function apiClearCart() {
 // ── Public API ───────────────────────────────────────────────────────────────
 
 export async function getCart() {
-  return config.USE_MOCK ? mockGetCart() : apiGetCart();
+  return config.MOCK.cart ? mockGetCart() : apiGetCart();
 }
 
 export async function addToCart(product, qty = 1) {
-  return config.USE_MOCK ? mockAddToCart(product, qty) : apiAddToCart(product, qty);
+  return config.MOCK.cart ? mockAddToCart(product, qty) : apiAddToCart(product, qty);
 }
 
 export async function removeFromCart(productId) {
-  return config.USE_MOCK ? mockRemoveFromCart(productId) : apiRemoveFromCart(productId);
+  return config.MOCK.cart ? mockRemoveFromCart(productId) : apiRemoveFromCart(productId);
 }
 
 export async function updateQty(productId, qty) {
-  return config.USE_MOCK ? mockUpdateQty(productId, qty) : apiUpdateQty(productId, qty);
+  return config.MOCK.cart ? mockUpdateQty(productId, qty) : apiUpdateQty(productId, qty);
 }
 
 export async function clearCart() {
-  return config.USE_MOCK ? mockClearCart() : apiClearCart();
+  return config.MOCK.cart ? mockClearCart() : apiClearCart();
 }
 
 export function getTotal() {
-  const items = config.USE_MOCK ? lsGetAll(CART_KEY) : (_cartCache || []);
+  const items = config.MOCK.cart ? lsGetAll(CART_KEY) : (_cartCache || []);
   return items.reduce((sum, item) => sum + item.price * item.qty, 0);
 }
 
 export function getCount() {
-  const items = config.USE_MOCK ? lsGetAll(CART_KEY) : (_cartCache || []);
+  const items = config.MOCK.cart ? lsGetAll(CART_KEY) : (_cartCache || []);
   return items.reduce((sum, item) => sum + item.qty, 0);
 }

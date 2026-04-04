@@ -104,7 +104,7 @@ export const template = `
 
 export async function init() {
   const user = getCurrentUser();
-  const cart = getCart();
+  const cart = await getCart();
   const subtotal = getTotal();
   const shipping = subtotal > 50 ? 0 : 5.99;
   const total = subtotal + shipping;
@@ -163,7 +163,7 @@ export async function init() {
 
     try {
       await createOrder(user.id, cart, total, paymentMethod);
-      clearCart();
+      await clearCart();
       showToast('Order placed successfully! 🎉', 'success');
       navigate('/orders');
     } catch (err) {

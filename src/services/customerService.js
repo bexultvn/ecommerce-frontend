@@ -23,7 +23,7 @@ function denormalize(c) {
 }
 
 export async function createCustomer(request) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     const users = lsGetAll('users');
     const newUser = { ...request, id: 'u' + Date.now() };
     users.push(newUser);
@@ -34,7 +34,7 @@ export async function createCustomer(request) {
 }
 
 export async function updateCustomer(request) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     const users = lsGetAll('users');
     const index = users.findIndex(u => u.id === String(request.id));
     if (index === -1) throw new Error('Customer not found');
@@ -46,14 +46,14 @@ export async function updateCustomer(request) {
 }
 
 export async function findAllCustomers() {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     return lsGetAll('users').map(normalize);
   }
   return (await apiGet('/customer')).map(normalize);
 }
 
 export async function findCustomerById(id) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     const user = lsGetAll('users').find(u => u.id === String(id));
     return user ? normalize(user) : null;
   }
@@ -65,14 +65,14 @@ export async function findCustomerById(id) {
 }
 
 export async function existsById(id) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     return lsGetAll('users').some(u => u.id === String(id));
   }
   return apiGet(`/customer/exists/${id}`);
 }
 
 export async function deleteCustomer(id) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.customer) {
     const users = lsGetAll('users').filter(u => u.id !== String(id));
     lsSet('users', users);
     return;

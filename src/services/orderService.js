@@ -6,7 +6,7 @@ import { clearCart } from './cartService.js';
 const ORDERS_KEY = 'orders';
 
 export async function createOrder(customerId, cartItems, total, paymentMethod) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.order) {
     const orders = lsGetAll(ORDERS_KEY);
     const newOrder = {
       id: 'o' + Date.now(),
@@ -44,7 +44,7 @@ export async function createOrder(customerId, cartItems, total, paymentMethod) {
 }
 
 export async function getOrders(userId) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.order) {
     const orders = lsGetAll(ORDERS_KEY);
     return orders.filter(o => o.userId === String(userId));
   }
@@ -52,7 +52,7 @@ export async function getOrders(userId) {
 }
 
 export async function getOrderById(id) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.order) {
     const orders = lsGetAll(ORDERS_KEY);
     return orders.find(o => o.id === String(id)) || null;
   }
@@ -60,7 +60,7 @@ export async function getOrderById(id) {
 }
 
 export async function getOrderLines(orderId) {
-  if (config.USE_MOCK) {
+  if (config.MOCK.order) {
     return [];
   }
   return apiGet(`/order-lines/order/${orderId}`);
