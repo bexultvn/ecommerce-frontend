@@ -6,8 +6,12 @@ import { lsGetAll, lsSet } from '../storage/localStorage.js';
 
 function mockLogin(email, password) {
   const users = lsGetAll('users');
-  const user = users.find(u => u.email === email && u.password === password);
-  if (!user) throw new Error('Invalid email or password');
+  const user = users.find((u) => u.email === email && u.password === password);
+
+  if (!user) {
+    throw new Error('Invalid email or password');
+  }
+
   const { password: _pw, ...safeUser } = user;
   setUser(safeUser);
   return safeUser;
@@ -15,9 +19,11 @@ function mockLogin(email, password) {
 
 function mockRegister({ firstName, lastName, email, password }) {
   const users = lsGetAll('users');
-  if (users.find(u => u.email === email)) {
+
+  if (users.find((u) => u.email === email)) {
     throw new Error('An account with this email already exists');
   }
+
   const newUser = {
     id: 'u' + Date.now(),
     email,
@@ -26,8 +32,10 @@ function mockRegister({ firstName, lastName, email, password }) {
     lastName,
     address: { street: '', houseNumber: '', zipCode: '' },
   };
+
   users.push(newUser);
   lsSet('users', users);
+
   const { password: _pw, ...safeUser } = newUser;
   setUser(safeUser);
   return safeUser;
@@ -36,35 +44,52 @@ function mockRegister({ firstName, lastName, email, password }) {
 // ── Real API implementation ──────────────────────────────────────────────────
 
 async function apiLogin(email, password) {
-  const res = await fetch(`${config.BASE_URL}/auth/login`, {
+  const res = await fetch(`${config.API.auth}/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ email, password }),
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.detail || 'Invalid credentials');
-  }
+
   const data = await res.json();
-  setUser({
+
+  if (!res.ok) {
+    throw new Error(data.detail || data.message || 'Invalid credentials');
+  }
+
+  const authUser = {
     uid: data.user.uid,
     email: data.user.email,
     access_token: data.access_token,
     refresh_token: data.refresh_token,
-  });
-  return data.user;
+  };
+
+  setUser(authUser);
+
+  return authUser;
 }
 
 async function apiRegister({ firstName, lastName, email, password }) {
-  const res = await fetch(`${config.BASE_URL}/auth/signup`, {
+  const res = await fetch(`${config.API.auth}/auth/signup`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+    }),
   });
+
+  const data = await res.json();
+
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.detail || 'Registration failed');
+    throw new Error(data.detail || data.message || 'Registration failed');
   }
+
   return apiLogin(email, password);
 }
 
