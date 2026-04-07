@@ -15,6 +15,10 @@ function getAuthHeaders() {
 }
 
 async function handleResponse(res) {
+  if (res.status === 204) {
+    return null;
+  }
+
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
@@ -72,8 +76,6 @@ export async function apiDelete(baseUrl, path) {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
-
-  if (res.status === 204) return null;
 
   return handleResponse(res);
 }

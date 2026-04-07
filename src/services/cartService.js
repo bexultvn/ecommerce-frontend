@@ -5,17 +5,19 @@ import { apiGet, apiPost, apiPatch, apiDelete } from './api.js';
 
 const CART_KEY = 'cart';
 
-// In-memory cache for API mode: [{ itemUid, productId, name, price, qty, image }]
+// cache for real API mode
 let _cartCache = null;
 
-function normalizeApiItem(item, product) {
+function normalizeApiItem(item, product = null) {
   return {
-    itemUid: item.uid,
-    productId: item.product_uid,
-    name: product.name,
-    price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+    itemUid: String(item.uid),
+    productId: String(item.product_uid),
+    name: product?.name ?? 'Unknown product',
+    price: product
+      ? (typeof product.price === 'string' ? parseFloat(product.price) : product.price)
+      : 0,
     qty: item.quantity,
-    image: product.image || null,
+    image: product?.image || null,
   };
 }
 
@@ -28,6 +30,7 @@ function mockGetCart() {
 function mockAddToCart(product, qty = 1) {
   const cart = mockGetCart();
   const existing = cart.find(item => item.productId === String(product.id));
+
   if (existing) {
     existing.qty += qty;
   } else {
@@ -39,6 +42,7 @@ function mockAddToCart(product, qty = 1) {
       image: product.image || null,
     });
   }
+
   lsSet(CART_KEY, cart);
   eventBus.emit('cart:updated', cart);
 }
@@ -52,11 +56,13 @@ function mockRemoveFromCart(productId) {
 function mockUpdateQty(productId, qty) {
   const cart = mockGetCart();
   const item = cart.find(i => i.productId === String(productId));
+
   if (item) {
     if (qty <= 0) {
       mockRemoveFromCart(productId);
       return;
     }
+
     item.qty = qty;
     lsSet(CART_KEY, cart);
     eventBus.emit('cart:updated', cart);
@@ -70,56 +76,96 @@ function mockClearCart() {
 
 // ── Real API implementations ─────────────────────────────────────────────────
 
+async function fetchProductById(productId) {
+  try {
+    return await apiGet(config.API.product, `/products/${productId}`);
+  } catch (error) {
+    console.error(`Failed to fetch product ${productId}:`, error);
+    return null;
+  }
+}
+
 async function apiGetCart() {
-  const data = await apiGet('/cart/me');
+  const data = await apiGet(config.API.cart, '/cart/me');
+
   const normalized = await Promise.all(
-    data.items.map(async item => {
-      const product = await apiGet(`/products/${item.product_uid}`);
+    data.items.map(async (item) => {
+      const product = await fetchProductById(item.product_uid);
       return normalizeApiItem(item, product);
     })
   );
+
   _cartCache = normalized;
   return normalized;
 }
 
 async function apiAddToCart(product, qty = 1) {
-  const item = await apiPost('/cart/items', { product_uid: product.id, quantity: qty });
-  if (_cartCache !== null) {
-    const existing = _cartCache.find(i => i.productId === item.product_uid);
+  const createdItem = await apiPost(config.API.cart, '/cart/items', {
+    product_uid: product.id,
+    quantity: qty,
+  });
+
+  const normalizedItem = normalizeApiItem(createdItem, product);
+
+  if (_cartCache === null) {
+    _cartCache = await apiGetCart();
+  } else {
+    const existing = _cartCache.find(
+      i => String(i.productId) === String(createdItem.product_uid)
+    );
+
     if (existing) {
-      existing.qty = item.quantity;
-      existing.itemUid = item.uid;
+      existing.qty = createdItem.quantity;
+      existing.itemUid = String(createdItem.uid);
     } else {
-      _cartCache.push(normalizeApiItem(item, product));
+      _cartCache.push(normalizedItem);
     }
   }
+
   eventBus.emit('cart:updated', _cartCache);
+  return normalizedItem;
 }
 
 async function apiRemoveFromCart(productId) {
-  if (_cartCache === null) return;
-  const cached = _cartCache.find(i => i.productId === String(productId));
+  if (_cartCache === null) {
+    await apiGetCart();
+  }
+
+  const cached = _cartCache.find(i => String(i.productId) === String(productId));
   if (!cached) return;
-  await apiDelete(`/cart/items/${cached.itemUid}`);
-  _cartCache = _cartCache.filter(i => i.productId !== String(productId));
+
+  await apiDelete(config.API.cart, `/cart/items/${cached.itemUid}`);
+
+  _cartCache = _cartCache.filter(i => String(i.productId) !== String(productId));
   eventBus.emit('cart:updated', _cartCache);
 }
 
 async function apiUpdateQty(productId, qty) {
-  if (_cartCache === null) return;
-  const cached = _cartCache.find(i => i.productId === String(productId));
+  if (_cartCache === null) {
+    await apiGetCart();
+  }
+
+  const cached = _cartCache.find(i => String(i.productId) === String(productId));
   if (!cached) return;
+
   if (qty <= 0) {
     await apiRemoveFromCart(productId);
     return;
   }
-  await apiPatch(`/cart/items/${cached.itemUid}`, { quantity: qty });
-  cached.qty = qty;
+
+  const updatedItem = await apiPatch(config.API.cart, `/cart/items/${cached.itemUid}`, {
+    quantity: qty,
+  });
+
+  cached.qty = updatedItem.quantity;
+  cached.itemUid = String(updatedItem.uid);
+
   eventBus.emit('cart:updated', _cartCache);
+  return cached;
 }
 
 async function apiClearCart() {
-  await apiDelete('/cart/clear');
+  await apiDelete(config.API.cart, '/cart/clear');
   _cartCache = [];
   eventBus.emit('cart:updated', []);
 }
@@ -135,11 +181,15 @@ export async function addToCart(product, qty = 1) {
 }
 
 export async function removeFromCart(productId) {
-  return config.MOCK.cart ? mockRemoveFromCart(productId) : apiRemoveFromCart(productId);
+  return config.MOCK.cart
+    ? mockRemoveFromCart(productId)
+    : apiRemoveFromCart(productId);
 }
 
 export async function updateQty(productId, qty) {
-  return config.MOCK.cart ? mockUpdateQty(productId, qty) : apiUpdateQty(productId, qty);
+  return config.MOCK.cart
+    ? mockUpdateQty(productId, qty)
+    : apiUpdateQty(productId, qty);
 }
 
 export async function clearCart() {
